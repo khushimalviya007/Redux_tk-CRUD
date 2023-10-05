@@ -57,8 +57,9 @@ function Tablee() {
     }
   };
   const handle=(e)=>{
-e.preventDefault();
+    e.preventDefault();
   }
+
   return (
    <>
    <div>
@@ -122,7 +123,6 @@ e.preventDefault();
           <Form.Label>Email address</Form.Label>
           <Form.Control type="email" placeholder="Enter email" defaultValue={updateBlogger ? updateBlogger.email:""} 
           onChange={(e) => setUpdateBlogger({ ...updateBlogger, email: e.target.value })}/>
-         
         </Form.Group>
         <Button variant="primary" onClick={handleUpdateSave}type="submit" >
           Update 
