@@ -4,15 +4,19 @@ import { Form } from 'react-bootstrap';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux'; // Import useSelector
 import axios from 'axios';
+import Navbar from './Navbar';
+import { fetchData } from '../Slices/BloggerSlice';
+import { useNavigate } from 'react-router-dom';
 
 const Blogger = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [blogger,setBloggers]= useState([]);
   const dispatch = useDispatch();
+  const nevigate= useNavigate();
 
   // Use useSelector to access the list of bloggers from Redux state
   const bloggers = useSelector((state) => state.users.users);
-
   const getName = (e) => {
     setName(e.target.value);
   };
@@ -21,25 +25,31 @@ const Blogger = () => {
     setEmail(e.target.value);
   };
 
-  const add = (name, email) => {
-    let payload = { name, email };
-    dispatch({ type: "SAVE", payload });
-  };
-
-  const handle = async (e) => {
-    e.preventDefault();
+  const add= ()=>{
     try {
-      await axios.post('http://localhost:8080/blogger/save', { name, email });
-      setName('');
-      setEmail('');
-      add(name, email);
+    axios.post('http://localhost:8080/blogger/save', { name, email }).
+      // setName('');
+      // setEmail('');
+    then((response)=>{
+      console.log(response.data);
+      setBloggers([...blogger,response.data])
+      dispatch(fetchData())
+    nevigate("/showblogger");
+    }
+    );
     } catch (error) {
       console.error('Error storing data:', error);
     }
+  }
+  const handle =  (e) => {
+    e.preventDefault();
   };
 
   return (
+    <>
     <div class="my-div">
+    <Navbar/>
+
       <Form onSubmit={handle}>
         <Form.Group className="mb-3">
           <Form.Label>Name</Form.Label>
@@ -55,23 +65,12 @@ const Blogger = () => {
         <Form.Group className="mb-3" controlId="formBasicCheckbox">
           <Form.Check type="checkbox" label="Check me out" />
         </Form.Group>
-        <Button variant="primary" type="submit" onClick={() => add(name, email)}>
+        <Button variant="primary" type="submit" onClick={() => add()}>
           ADD
         </Button>
       </Form>
-
-      {/* Display the list of bloggers */}
-      <div>
-        <h2>Blogger List</h2>
-        <ul>
-          {bloggers.map((blogger) => (
-            <li key={blogger.id}>
-              Name: {blogger.name}, Email: {blogger.email}
-            </li>
-          ))}
-        </ul>
-      </div>
     </div>
+    </>
   );
 };
 

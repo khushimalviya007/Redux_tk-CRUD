@@ -1,22 +1,19 @@
 import React, { useState } from 'react';
-import Home from './Home';
-import Blogger from './Blogger';
-import Article from './Article';
-import Tablee from './showBloggers';
+import {Link} from 'react-router-dom';
+
 const Navbar = () => {
   const[state, setState] = useState("Home");
   return (
     <>
-    <nav>
+    <nav className='navbar-container'>
       <ul>
-        {/* <li>Home</li> */}
-        <button onClick={()=>setState("Home")}>Home</button>
-        <button onClick={()=>setState("Blogger")}>Blogger</button>
-        <button onClick={()=>setState("Article")}>Article</button>
-        <button onClick={()=>setState("list")}>Blogger's List</button>
+      <Link to="/home" className="btn bd-primary">Home</Link>
+      <Link to="/blogger" className="btn bd-primary">Blogger</Link>
+      <Link to="/showblogger" className="btn bd-primary">Blogger's List</Link>
+      <Link to="/showArticles" className="btn bd-primary">Articles's List</Link>
       </ul>
     </nav>
-    <div>{state === "Blogger"?(<div className='parentBlog'><Blogger/></div>):state=== "Article"?(<div className='parentBlog'><Article/></div>):state ==="list"?(<div><Tablee/></div>):(<div><Home/></div>)}</div>
+    {/* <div>{state === "Blogger"?(<div className='parentBlog'><Blogger/></div>):state=== "Article"?(<div className='parentBlog'><Article/></div>):state ==="list"?(<div><Tablee/></div>):(<div><Home/></div>)}</div> */}
     </>
   );
 };

@@ -1,6 +1,8 @@
-// userSlice.js
 import { createSlice } from '@reduxjs/toolkit';
+import { Dispatch } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { async } from 'rxjs';
 
 
 const initialState = {
@@ -19,24 +21,31 @@ export const fetchData = () => async (dispatch) => {
   }
 };
 
-// export const deleteU = (itemId) => async (dispatch) => {
-//   try {
-//     await axios.delete(`http://localhost:8080/blogger/${itemId}`);
-//     dispatch(deleteUser(itemId));
-//   } catch (error) {
-//     console.error('Error deleting item', error);
-//   }
-// };
+export const addArticleToBlogger=({articleName,id,articleDes})=>{
+  return async (dispatch)=>
+  {
+    try{
+      const toSave = {
+        articleName: articleName,
+        description: articleDes,
+      }
+      const response = await axios.post(`http://localhost:8080/blogger/${id}/savearticle`,toSave);
+      console.log(response.data , "Hey Guysss...");
+      dispatch(addArticleToBloggerFullfilled(response.data));
+    }catch(error){}
+  };
+};
 
-// export const updateU = (id, name, email) => async (dispatch) => {
-//   const details = { name, email };
-//   try {
-//     await axios.put(`http://localhost:8080/blogger/${id}`, details);
-//     dispatch(updateUser({ id, details }));
-//   } catch (error) {
-//     console.error('Error updating resource:', error);
-//   }
-// };
+export const deleteBloggerrById = (id) => {
+  return async (dispatch) => {
+    try {
+      await axios.delete(`http://localhost:8080/blogger/${id}`);
+      dispatch(deleteBloggerByIdFulfilled(id));
+    } catch (error) {
+    }
+  };
+};
+
 
 const userSlice = createSlice({
   name: 'users',
@@ -59,14 +68,13 @@ const userSlice = createSlice({
     saveUser: (state, action) => {
       state.users.push(action.payload);
     },
-    // deleteU: (state, action) => {
-    //   state.users = state.users.filter((user) => user.id !== action.payload);
-    // },
-    // updateU: (state, action) => {
-    //   state.users = state.users.map((user) =>
-    //     user.id === action.payload.id ? { ...user, ...action.payload.details } : user
-    //   );
-    // },
+    addArticleToBloggerFullfilled:(state, action)=>{
+      state.users.push(action.payload);
+    },
+    deleteBloggerByIdFulfilled: (state, action) => {
+      state.users = state.users.filter((user) => user.id !== action.payload);
+    },    
+    
   },
 });
 
@@ -75,8 +83,9 @@ export const {
   fetchDataSuccess,
   fetchDataFailure,
   saveUser,
-  deleteUser,
-  updateUser,
+  addArticleToBloggerFullfilled,
+  deleteBloggerByIdFulfilled,
+  deleteArticleByIdFulfilled,
 } = userSlice.actions;
 
 export default userSlice.reducer;

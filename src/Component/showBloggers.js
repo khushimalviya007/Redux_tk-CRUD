@@ -5,62 +5,72 @@ import { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
-import {fetchData} from '../Slices/BloggerSlice';
+import {deleteBloggerrById, fetchData} from '../Slices/BloggerSlice';
+import Navbar from './Navbar';
+import { Link, useNavigate } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import axios from 'axios';
+
 
 function Tablee() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [id, setId] = useState(0);
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
   const { users, isLoading, error } = useSelector((state) => state.users);
+  console.log(users);
   const dispatch = useDispatch();
+  const nevigate = useNavigate();
+  const [show, setShow] = useState(false);
+  const [updateBlogger, setUpdateBlogger] = useState({});
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   useEffect(() => {
     dispatch(fetchData());
   }, [dispatch]);
 
-  // const handleDelete = (itemId) => {
-  //   dispatch(deleteU(itemId));
-  // };
-
-  // const handleUpdate = (id, name, email) => {
-  //   setName(name);
-  //   setEmail(email);
-  //   setId(id);
-  //   setShow(true);
-  // };
-
-  const handleInputName = (e) => {
-    setName(e.target.value);
-  };
-
-  const handleInputEmail = (e) => {
-    setEmail(e.target.value);
-  };
-
-  const handleAdd = () => {
+  const deleteBlogger = (id) => {
+    dispatch(deleteBloggerrById(id));
   };
 
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
-
   if (error) {
     return <div>Error: {error.message}</div>;
   }
+  const handleUpdate = (users) => {
+    setUpdateBlogger(users);
+    handleShow();
+  };
 
+  const handleUpdateSave = () => {
+    if (updateBlogger.id) {
+      axios.put(`http://localhost:8080/blogger/${updateBlogger.id}`, updateBlogger)
+        .then((response) => {
+          console.log("Employee updated successfully:", response.data);
+          dispatch(fetchData());
+        })
+        .catch((error) => {
+          console.error("Error updating employee:", error);
+        });
+
+      handleClose();
+    }
+  };
   const handle=(e)=>{
 e.preventDefault();
   }
   return (
+   <>
+   <div>
+    <Navbar/>
+   </div>
     <Table striped bordered hover variant="dark">
       <thead> 
         <tr>
           <th>id</th>
           <th>First Name</th>
           <th>Username</th>
+          <th>All articles</th>
           <th>Add Article</th>
           <th>Update</th>
           <th>Delete</th>
@@ -73,63 +83,51 @@ e.preventDefault();
               <td>{item.id}</td>
               <td>{item.name}</td>
               <td>{item.email}</td>
+              <td><ul>
+                    {item.articlelist.map((article) => (
+                      <li key={article.id}>{article.articleName}</li>
+                    ))}
+                  </ul></td>
               <td>
-                <button className="tableButton2" onClick={handleAdd}>
-                  Add
-                </button>
+              <Link to={`/article/${item.id}`} className="btn-bd-primary add-article-link">Add Article</Link>
               </td>
               <td>
                 <button
-                  className="tableButton1"
-                  
-                >
+                  className="tableButton1"    onClick={()=> handleUpdate(item)} >
                   Update
                 </button>
               </td>
               <td>
                 <button
-                  className="tableButton"
-                  
-                >
+                  className="tableButton"  onClick={()=>deleteBlogger(item.id)}>
                   Delete
                 </button>
               </td>
             </tr>
           ))}
       </tbody>
-      {/* Modal for editing user */}
-      <Modal show={show} onHide={handleClose}>
+        </Table>
+        <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Edit Form</Modal.Title>
+          <Modal.Title>Update Details</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form style={{ width: '40%' }} onSubmit={handle}>
-            <Form.Group className="mb-3" controlId="Name">
-              <Form.Label>Name</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter Name"
-                defaultValue={name}
-                onChange={handleInputName}
-              />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicEmail">
-              <Form.Label className="text-center">Email address</Form.Label>
-              <Form.Control
-                type="email"
-                placeholder="Enter email"
-                defaultValue={email}
-                onChange={handleInputEmail}
-              />
-            </Form.Group>
-            <Button
-              variant="primary"
-              type="submit"
-              style={{ margin: '20px' }}
-            >
-              Save Changes
-            </Button>
-          </Form>
+        <Form onSubmit={handle}>
+        <Form.Group className="mb-3">
+          <Form.Label>Name</Form.Label>
+          <Form.Control type="text" defaultValue={updateBlogger ? updateBlogger.name:""}  onChange={(e) => setUpdateBlogger({ ...updateBlogger, name: e.target.value })}
+          placeholder="Enter Name" />
+        </Form.Group>
+        <Form.Group className="mb-3" controlId="formBasicEmail">
+          <Form.Label>Email address</Form.Label>
+          <Form.Control type="email" placeholder="Enter email" defaultValue={updateBlogger ? updateBlogger.email:""} 
+          onChange={(e) => setUpdateBlogger({ ...updateBlogger, email: e.target.value })}/>
+         
+        </Form.Group>
+        <Button variant="primary" onClick={handleUpdateSave}type="submit" >
+          Update 
+        </Button>
+      </Form>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
@@ -137,7 +135,7 @@ e.preventDefault();
           </Button>
         </Modal.Footer>
       </Modal>
-    </Table>
+    </>
   );
 }
 
