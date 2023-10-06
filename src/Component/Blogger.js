@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Button } from 'react-bootstrap';
 import { Form } from 'react-bootstrap';
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux'; // Import useSelector
+import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import Navbar from './Navbar';
 import { fetchData } from '../Slices/BloggerSlice';
@@ -15,7 +15,6 @@ const Blogger = () => {
   const dispatch = useDispatch();
   const nevigate= useNavigate();
 
-  // Use useSelector to access the list of bloggers from Redux state
   const bloggers = useSelector((state) => state.users.users);
   const getName = (e) => {
     setName(e.target.value);
@@ -49,7 +48,6 @@ const Blogger = () => {
     <>
     <div class="my-div">
     <Navbar/>
-
       <Form onSubmit={handle}>
         <Form.Group className="mb-3">
           <Form.Label>Name</Form.Label>

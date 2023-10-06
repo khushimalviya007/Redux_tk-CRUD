@@ -10,14 +10,12 @@ const Article = () => {
   const {id}= useParams();
   const [articleName,setArticleName]= useState('');
   const [articleDes,setArticleDes]= useState('');
-
   const dispatch =useDispatch();
   const navigate = useNavigate();
 
   const handleAddArticle=()=>{
     
     if(articleName){
-      //console.log(articleName+'   '+articleDes);
       dispatch(addArticleToBlogger({articleName,id,articleDes}))
       .then(()=>{
         console.log('article added sucessfully'+ articleName);

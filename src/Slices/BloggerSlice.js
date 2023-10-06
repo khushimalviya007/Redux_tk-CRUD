@@ -30,7 +30,7 @@ export const addArticleToBlogger=({articleName,id,articleDes})=>{
         description: articleDes,
       }
       const response = await axios.post(`http://localhost:8080/blogger/${id}/savearticle`,toSave);
-      console.log(response.data , "Hey Guysss...");
+      console.log(response.data);
       dispatch(addArticleToBloggerFullfilled(response.data));
     }catch(error){}
   };
@@ -45,7 +45,6 @@ export const deleteBloggerrById = (id) => {
     }
   };
 };
-
 
 const userSlice = createSlice({
   name: 'users',

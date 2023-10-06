@@ -11,7 +11,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 
-
 function Tablee() {
   const { users, isLoading, error } = useSelector((state) => state.users);
   console.log(users);
@@ -24,7 +23,7 @@ function Tablee() {
 
   useEffect(() => {
     dispatch(fetchData());
-  }, [dispatch]);
+  }, []);
 
   const deleteBlogger = (id) => {
     dispatch(deleteBloggerrById(id));
@@ -38,6 +37,7 @@ function Tablee() {
     return <div>Error: {error.message}</div>;
   }
   const handleUpdate = (users) => {
+    console.log(users);
     setUpdateBlogger(users);
     handleShow();
   };
@@ -46,16 +46,17 @@ function Tablee() {
     if (updateBlogger.id) {
       axios.put(`http://localhost:8080/blogger/${updateBlogger.id}`, updateBlogger)
         .then((response) => {
-          console.log("Employee updated successfully:", response.data);
+          console.log("blogger updated successfully:", response.data);
           dispatch(fetchData());
         })
         .catch((error) => {
-          console.error("Error updating employee:", error);
+          console.error("Error updating blogger:", error);
         });
 
       handleClose();
     }
   };
+
   const handle=(e)=>{
     e.preventDefault();
   }
