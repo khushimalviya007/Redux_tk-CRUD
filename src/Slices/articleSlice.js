@@ -19,11 +19,11 @@ export const fetchDataarticle = () => async (dispatch) => {
   }
 };
 
-export const deleteArticleId = (articleid, blogentityid) => {
+export const deleteArticleId = (articleid) => {
   return async (dispatch) => {
     try {
-      await axios.delete(`http://localhost:8080/blogger/${blogentityid}/delete/${articleid}`);
-      dispatch(deleteArticleByIdFulfilled(articleid, blogentityid));
+      await axios.delete(`http://localhost:8080/blogger/delete/${articleid}`);
+      dispatch(deleteArticleByIdFulfilled(articleid));
     } catch (error) {
     }
   };

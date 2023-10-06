@@ -42,6 +42,7 @@ function Tablee() {
     handleShow();
   };
 
+  
   const handleUpdateSave = () => {
     if (updateBlogger.id) {
       axios.put(`http://localhost:8080/blogger/${updateBlogger.id}`, updateBlogger)
@@ -139,5 +140,4 @@ function Tablee() {
     </>
   );
 }
-
 export default Tablee;

@@ -26,7 +26,8 @@ const Blogger = () => {
 
   const add= ()=>{
     try {
-    axios.post('http://localhost:8080/blogger/save', { name, email }).
+    axios.post('http://localhost:8080/blogger/save', { name, email }
+    ).
       // setName('');
       // setEmail('');
     then((response)=>{
